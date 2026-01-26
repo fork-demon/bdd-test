@@ -1,0 +1,2825 @@
+
+            // Global Runtime Map
+            var __POLICY_MAP = {};
+            
+            // Helper to register policies
+            function __register_policy(id, ruleFn, metadata) {
+                __POLICY_MAP[id] = {
+                    rule: ruleFn,
+                    metadata: metadata
+                };
+            }
+
+            // Global Execute Function (Entry Point)
+            function __execute_bundle(policyId, factsJson) {
+                var policy = __POLICY_MAP[policyId];
+                if (!policy) {
+                     return JSON.stringify({ error: "Policy not found in bundle: " + policyId });
+                }
+                
+                var facts = JSON.parse(factsJson);
+                var metadata = policy.metadata;
+                
+                // Execute rule (assuming ruleFn follows the { condition, action } pattern or simpler)
+                // Our compiled templates usually return a rule object or builder.
+                // We need to adapt based on how `compiled_js` looks.
+                
+                // Let's assume the compiled_js defines a `rule` variable or similar.
+                // To isolate them, we wrap each in a closure.
+                
+                try {
+                    var result = policy.rule(facts, metadata);
+                    return JSON.stringify(result);
+                } catch (e) {
+                    return JSON.stringify({ error: e.toString() });
+                }
+            }
+        
+                function __template_60a13e229957412d8acd52128e2003ab(facts, metadata) {
+                    // Define __execute within this scope
+                    
+// === Policy Hub Runtime ===
+
+// Policy Hub Runtime - when/then DSL
+var __PolicyHub = {
+    rules: [],
+    
+    // Create a new rule builder
+    rule: function(name) {
+        return {
+            name: name,
+            condition: null,
+            action: null,
+            
+            when: function(conditionFn) {
+                this.condition = conditionFn;
+                return this;
+            },
+            
+            then: function(actionFn) {
+                this.action = actionFn;
+                __PolicyHub.rules.push({
+                    name: this.name,
+                    condition: this.condition,
+                    action: this.action
+                });
+                return this;
+            }
+        };
+    },
+    
+    // Execute all registered rules
+    execute: function(facts, metadata) {
+        var results = [];
+        for (var i = 0; i < this.rules.length; i++) {
+            var rule = this.rules[i];
+            try {
+                var conditionMet = rule.condition(facts, metadata);
+                if (conditionMet) {
+                    var output = rule.action(facts, metadata);
+                    results.push({
+                        rule: rule.name,
+                        conditionMet: true,
+                        output: output
+                    });
+                } else {
+                    results.push({
+                        rule: rule.name,
+                        conditionMet: false,
+                        output: null
+                    });
+                }
+            } catch (e) {
+                results.push({
+                    rule: rule.name,
+                    error: e.toString()
+                });
+            }
+        }
+        return results;
+    },
+    
+    // Reset rules (for reuse)
+    reset: function() {
+        this.rules = [];
+    }
+};
+
+// Expose rule function globally
+function rule(name) {
+    return __PolicyHub.rule(name);
+}
+
+// Expose when/then for standalone usage
+function when(conditionFn) {
+    return {
+        then: function(actionFn) {
+            return {
+                condition: conditionFn,
+                action: actionFn,
+                evaluate: function(facts, metadata) {
+                    var conditionMet = conditionFn(facts, metadata);
+                    if (conditionMet) {
+                        return {
+                            conditionMet: true,
+                            output: actionFn(facts, metadata)
+                        };
+                    }
+                    return { conditionMet: false, output: null };
+                }
+            };
+        }
+    };
+}
+
+
+// === User Rule Definition ===
+rule("discount").when(f => f.amount > 100).then(f => ({ discount: f.amount * 0.1 }))
+
+// === Execution Entry Point ===
+function __execute(factsJson, metadataJson) {
+    var facts = JSON.parse(factsJson);
+    var metadata = JSON.parse(metadataJson);
+    var results = __PolicyHub.execute(facts, metadata);
+    return JSON.stringify(results);
+}
+
+                    
+                    // Call the internal __execute function with JSON strings
+                    return __execute(JSON.stringify(facts), JSON.stringify(metadata));
+                }
+                
+                function __template_33a3557afd53464eb7b6006aafd1ff6f(facts, metadata) {
+                    // Define __execute within this scope
+                    
+// === Policy Hub Runtime ===
+
+// Policy Hub Runtime - when/then DSL
+var __PolicyHub = {
+    rules: [],
+    
+    // Create a new rule builder
+    rule: function(name) {
+        return {
+            name: name,
+            condition: null,
+            action: null,
+            
+            when: function(conditionFn) {
+                this.condition = conditionFn;
+                return this;
+            },
+            
+            then: function(actionFn) {
+                this.action = actionFn;
+                __PolicyHub.rules.push({
+                    name: this.name,
+                    condition: this.condition,
+                    action: this.action
+                });
+                return this;
+            }
+        };
+    },
+    
+    // Execute all registered rules
+    execute: function(facts, metadata) {
+        var results = [];
+        for (var i = 0; i < this.rules.length; i++) {
+            var rule = this.rules[i];
+            try {
+                var conditionMet = rule.condition(facts, metadata);
+                if (conditionMet) {
+                    var output = rule.action(facts, metadata);
+                    results.push({
+                        rule: rule.name,
+                        conditionMet: true,
+                        output: output
+                    });
+                } else {
+                    results.push({
+                        rule: rule.name,
+                        conditionMet: false,
+                        output: null
+                    });
+                }
+            } catch (e) {
+                results.push({
+                    rule: rule.name,
+                    error: e.toString()
+                });
+            }
+        }
+        return results;
+    },
+    
+    // Reset rules (for reuse)
+    reset: function() {
+        this.rules = [];
+    }
+};
+
+// Expose rule function globally
+function rule(name) {
+    return __PolicyHub.rule(name);
+}
+
+// Expose when/then for standalone usage
+function when(conditionFn) {
+    return {
+        then: function(actionFn) {
+            return {
+                condition: conditionFn,
+                action: actionFn,
+                evaluate: function(facts, metadata) {
+                    var conditionMet = conditionFn(facts, metadata);
+                    if (conditionMet) {
+                        return {
+                            conditionMet: true,
+                            output: actionFn(facts, metadata)
+                        };
+                    }
+                    return { conditionMet: false, output: null };
+                }
+            };
+        }
+    };
+}
+
+
+// === User Rule Definition ===
+rule("discount").when(f => f.amount > 100).then(f => ({ discount: f.amount * 0.1 }))
+
+// === Execution Entry Point ===
+function __execute(factsJson, metadataJson) {
+    var facts = JSON.parse(factsJson);
+    var metadata = JSON.parse(metadataJson);
+    var results = __PolicyHub.execute(facts, metadata);
+    return JSON.stringify(results);
+}
+
+                    
+                    // Call the internal __execute function with JSON strings
+                    return __execute(JSON.stringify(facts), JSON.stringify(metadata));
+                }
+                
+                function __template_ff9db972fe194f2b804b25309d89e4fa(facts, metadata) {
+                    // Define __execute within this scope
+                    
+// === Policy Hub Runtime ===
+
+// Policy Hub Runtime - when/then DSL
+var __PolicyHub = {
+    rules: [],
+    
+    // Create a new rule builder
+    rule: function(name) {
+        return {
+            name: name,
+            condition: null,
+            action: null,
+            
+            when: function(conditionFn) {
+                this.condition = conditionFn;
+                return this;
+            },
+            
+            then: function(actionFn) {
+                this.action = actionFn;
+                __PolicyHub.rules.push({
+                    name: this.name,
+                    condition: this.condition,
+                    action: this.action
+                });
+                return this;
+            }
+        };
+    },
+    
+    // Execute all registered rules
+    execute: function(facts, metadata) {
+        var results = [];
+        for (var i = 0; i < this.rules.length; i++) {
+            var rule = this.rules[i];
+            try {
+                var conditionMet = rule.condition(facts, metadata);
+                if (conditionMet) {
+                    var output = rule.action(facts, metadata);
+                    results.push({
+                        rule: rule.name,
+                        conditionMet: true,
+                        output: output
+                    });
+                } else {
+                    results.push({
+                        rule: rule.name,
+                        conditionMet: false,
+                        output: null
+                    });
+                }
+            } catch (e) {
+                results.push({
+                    rule: rule.name,
+                    error: e.toString()
+                });
+            }
+        }
+        return results;
+    },
+    
+    // Reset rules (for reuse)
+    reset: function() {
+        this.rules = [];
+    }
+};
+
+// Expose rule function globally
+function rule(name) {
+    return __PolicyHub.rule(name);
+}
+
+// Expose when/then for standalone usage
+function when(conditionFn) {
+    return {
+        then: function(actionFn) {
+            return {
+                condition: conditionFn,
+                action: actionFn,
+                evaluate: function(facts, metadata) {
+                    var conditionMet = conditionFn(facts, metadata);
+                    if (conditionMet) {
+                        return {
+                            conditionMet: true,
+                            output: actionFn(facts, metadata)
+                        };
+                    }
+                    return { conditionMet: false, output: null };
+                }
+            };
+        }
+    };
+}
+
+
+// === User Rule Definition ===
+rule("discount").when(f => f.amount > 100).then(f => ({ discount: f.amount * 0.1 }))
+
+// === Execution Entry Point ===
+function __execute(factsJson, metadataJson) {
+    var facts = JSON.parse(factsJson);
+    var metadata = JSON.parse(metadataJson);
+    var results = __PolicyHub.execute(facts, metadata);
+    return JSON.stringify(results);
+}
+
+                    
+                    // Call the internal __execute function with JSON strings
+                    return __execute(JSON.stringify(facts), JSON.stringify(metadata));
+                }
+                
+                function __template_1d9069ded4cd4b81b87fa4ce89aba4c9(facts, metadata) {
+                    // Define __execute within this scope
+                    
+// === Policy Hub Runtime ===
+
+// Policy Hub Runtime - when/then DSL
+var __PolicyHub = {
+    rules: [],
+    
+    // Create a new rule builder
+    rule: function(name) {
+        return {
+            name: name,
+            condition: null,
+            action: null,
+            
+            when: function(conditionFn) {
+                this.condition = conditionFn;
+                return this;
+            },
+            
+            then: function(actionFn) {
+                this.action = actionFn;
+                __PolicyHub.rules.push({
+                    name: this.name,
+                    condition: this.condition,
+                    action: this.action
+                });
+                return this;
+            }
+        };
+    },
+    
+    // Execute all registered rules
+    execute: function(facts, metadata) {
+        var results = [];
+        for (var i = 0; i < this.rules.length; i++) {
+            var rule = this.rules[i];
+            try {
+                var conditionMet = rule.condition(facts, metadata);
+                if (conditionMet) {
+                    var output = rule.action(facts, metadata);
+                    results.push({
+                        rule: rule.name,
+                        conditionMet: true,
+                        output: output
+                    });
+                } else {
+                    results.push({
+                        rule: rule.name,
+                        conditionMet: false,
+                        output: null
+                    });
+                }
+            } catch (e) {
+                results.push({
+                    rule: rule.name,
+                    error: e.toString()
+                });
+            }
+        }
+        return results;
+    },
+    
+    // Reset rules (for reuse)
+    reset: function() {
+        this.rules = [];
+    }
+};
+
+// Expose rule function globally
+function rule(name) {
+    return __PolicyHub.rule(name);
+}
+
+// Expose when/then for standalone usage
+function when(conditionFn) {
+    return {
+        then: function(actionFn) {
+            return {
+                condition: conditionFn,
+                action: actionFn,
+                evaluate: function(facts, metadata) {
+                    var conditionMet = conditionFn(facts, metadata);
+                    if (conditionMet) {
+                        return {
+                            conditionMet: true,
+                            output: actionFn(facts, metadata)
+                        };
+                    }
+                    return { conditionMet: false, output: null };
+                }
+            };
+        }
+    };
+}
+
+
+// === User Rule Definition ===
+rule("test").when(f => f.value > 10).then(f => ({result: f.value * 2}))
+
+// === Execution Entry Point ===
+function __execute(factsJson, metadataJson) {
+    var facts = JSON.parse(factsJson);
+    var metadata = JSON.parse(metadataJson);
+    var results = __PolicyHub.execute(facts, metadata);
+    return JSON.stringify(results);
+}
+
+                    
+                    // Call the internal __execute function with JSON strings
+                    return __execute(JSON.stringify(facts), JSON.stringify(metadata));
+                }
+                
+                function __template_bed4b4a5c4804ecd8454d9192a2f484c(facts, metadata) {
+                    // Define __execute within this scope
+                    
+// === Policy Hub Runtime ===
+
+// Policy Hub Runtime - when/then DSL
+var __PolicyHub = {
+    rules: [],
+    
+    // Create a new rule builder
+    rule: function(name) {
+        return {
+            name: name,
+            condition: null,
+            action: null,
+            
+            when: function(conditionFn) {
+                this.condition = conditionFn;
+                return this;
+            },
+            
+            then: function(actionFn) {
+                this.action = actionFn;
+                __PolicyHub.rules.push({
+                    name: this.name,
+                    condition: this.condition,
+                    action: this.action
+                });
+                return this;
+            }
+        };
+    },
+    
+    // Execute all registered rules
+    execute: function(facts, metadata) {
+        var results = [];
+        for (var i = 0; i < this.rules.length; i++) {
+            var rule = this.rules[i];
+            try {
+                var conditionMet = rule.condition(facts, metadata);
+                if (conditionMet) {
+                    var output = rule.action(facts, metadata);
+                    results.push({
+                        rule: rule.name,
+                        conditionMet: true,
+                        output: output
+                    });
+                } else {
+                    results.push({
+                        rule: rule.name,
+                        conditionMet: false,
+                        output: null
+                    });
+                }
+            } catch (e) {
+                results.push({
+                    rule: rule.name,
+                    error: e.toString()
+                });
+            }
+        }
+        return results;
+    },
+    
+    // Reset rules (for reuse)
+    reset: function() {
+        this.rules = [];
+    }
+};
+
+// Expose rule function globally
+function rule(name) {
+    return __PolicyHub.rule(name);
+}
+
+// Expose when/then for standalone usage
+function when(conditionFn) {
+    return {
+        then: function(actionFn) {
+            return {
+                condition: conditionFn,
+                action: actionFn,
+                evaluate: function(facts, metadata) {
+                    var conditionMet = conditionFn(facts, metadata);
+                    if (conditionMet) {
+                        return {
+                            conditionMet: true,
+                            output: actionFn(facts, metadata)
+                        };
+                    }
+                    return { conditionMet: false, output: null };
+                }
+            };
+        }
+    };
+}
+
+
+// === User Rule Definition ===
+rule("boundary").when(f => f.amount > 100).then(f => ({ result: "above" }))
+
+// === Execution Entry Point ===
+function __execute(factsJson, metadataJson) {
+    var facts = JSON.parse(factsJson);
+    var metadata = JSON.parse(metadataJson);
+    var results = __PolicyHub.execute(facts, metadata);
+    return JSON.stringify(results);
+}
+
+                    
+                    // Call the internal __execute function with JSON strings
+                    return __execute(JSON.stringify(facts), JSON.stringify(metadata));
+                }
+                
+                function __template_b48389a9d4e64adebc3e938936c11b23(facts, metadata) {
+                    // Define __execute within this scope
+                    
+// === Policy Hub Runtime ===
+
+// Policy Hub Runtime - when/then DSL
+var __PolicyHub = {
+    rules: [],
+    
+    // Create a new rule builder
+    rule: function(name) {
+        return {
+            name: name,
+            condition: null,
+            action: null,
+            
+            when: function(conditionFn) {
+                this.condition = conditionFn;
+                return this;
+            },
+            
+            then: function(actionFn) {
+                this.action = actionFn;
+                __PolicyHub.rules.push({
+                    name: this.name,
+                    condition: this.condition,
+                    action: this.action
+                });
+                return this;
+            }
+        };
+    },
+    
+    // Execute all registered rules
+    execute: function(facts, metadata) {
+        var results = [];
+        for (var i = 0; i < this.rules.length; i++) {
+            var rule = this.rules[i];
+            try {
+                var conditionMet = rule.condition(facts, metadata);
+                if (conditionMet) {
+                    var output = rule.action(facts, metadata);
+                    results.push({
+                        rule: rule.name,
+                        conditionMet: true,
+                        output: output
+                    });
+                } else {
+                    results.push({
+                        rule: rule.name,
+                        conditionMet: false,
+                        output: null
+                    });
+                }
+            } catch (e) {
+                results.push({
+                    rule: rule.name,
+                    error: e.toString()
+                });
+            }
+        }
+        return results;
+    },
+    
+    // Reset rules (for reuse)
+    reset: function() {
+        this.rules = [];
+    }
+};
+
+// Expose rule function globally
+function rule(name) {
+    return __PolicyHub.rule(name);
+}
+
+// Expose when/then for standalone usage
+function when(conditionFn) {
+    return {
+        then: function(actionFn) {
+            return {
+                condition: conditionFn,
+                action: actionFn,
+                evaluate: function(facts, metadata) {
+                    var conditionMet = conditionFn(facts, metadata);
+                    if (conditionMet) {
+                        return {
+                            conditionMet: true,
+                            output: actionFn(facts, metadata)
+                        };
+                    }
+                    return { conditionMet: false, output: null };
+                }
+            };
+        }
+    };
+}
+
+
+// === User Rule Definition ===
+rule("discount").when(f => f.amount > 100).then(f => ({ discount: f.amount * 0.1 }))
+
+// === Execution Entry Point ===
+function __execute(factsJson, metadataJson) {
+    var facts = JSON.parse(factsJson);
+    var metadata = JSON.parse(metadataJson);
+    var results = __PolicyHub.execute(facts, metadata);
+    return JSON.stringify(results);
+}
+
+                    
+                    // Call the internal __execute function with JSON strings
+                    return __execute(JSON.stringify(facts), JSON.stringify(metadata));
+                }
+                
+                function __template_b77d2b06b0754e3391f360ad377d86dc(facts, metadata) {
+                    // Define __execute within this scope
+                    
+// === Policy Hub Runtime ===
+
+// Policy Hub Runtime - when/then DSL
+var __PolicyHub = {
+    rules: [],
+    
+    // Create a new rule builder
+    rule: function(name) {
+        return {
+            name: name,
+            condition: null,
+            action: null,
+            
+            when: function(conditionFn) {
+                this.condition = conditionFn;
+                return this;
+            },
+            
+            then: function(actionFn) {
+                this.action = actionFn;
+                __PolicyHub.rules.push({
+                    name: this.name,
+                    condition: this.condition,
+                    action: this.action
+                });
+                return this;
+            }
+        };
+    },
+    
+    // Execute all registered rules
+    execute: function(facts, metadata) {
+        var results = [];
+        for (var i = 0; i < this.rules.length; i++) {
+            var rule = this.rules[i];
+            try {
+                var conditionMet = rule.condition(facts, metadata);
+                if (conditionMet) {
+                    var output = rule.action(facts, metadata);
+                    results.push({
+                        rule: rule.name,
+                        conditionMet: true,
+                        output: output
+                    });
+                } else {
+                    results.push({
+                        rule: rule.name,
+                        conditionMet: false,
+                        output: null
+                    });
+                }
+            } catch (e) {
+                results.push({
+                    rule: rule.name,
+                    error: e.toString()
+                });
+            }
+        }
+        return results;
+    },
+    
+    // Reset rules (for reuse)
+    reset: function() {
+        this.rules = [];
+    }
+};
+
+// Expose rule function globally
+function rule(name) {
+    return __PolicyHub.rule(name);
+}
+
+// Expose when/then for standalone usage
+function when(conditionFn) {
+    return {
+        then: function(actionFn) {
+            return {
+                condition: conditionFn,
+                action: actionFn,
+                evaluate: function(facts, metadata) {
+                    var conditionMet = conditionFn(facts, metadata);
+                    if (conditionMet) {
+                        return {
+                            conditionMet: true,
+                            output: actionFn(facts, metadata)
+                        };
+                    }
+                    return { conditionMet: false, output: null };
+                }
+            };
+        }
+    };
+}
+
+
+// === User Rule Definition ===
+rule("test").when(f => f.value > 10).then(f => ({result: f.value * 2}))
+
+// === Execution Entry Point ===
+function __execute(factsJson, metadataJson) {
+    var facts = JSON.parse(factsJson);
+    var metadata = JSON.parse(metadataJson);
+    var results = __PolicyHub.execute(facts, metadata);
+    return JSON.stringify(results);
+}
+
+                    
+                    // Call the internal __execute function with JSON strings
+                    return __execute(JSON.stringify(facts), JSON.stringify(metadata));
+                }
+                
+                function __template_4c64bde71b6d44888c37ce4c2b79176c(facts, metadata) {
+                    // Define __execute within this scope
+                    
+// === Policy Hub Runtime ===
+
+// Policy Hub Runtime - when/then DSL
+var __PolicyHub = {
+    rules: [],
+    
+    // Create a new rule builder
+    rule: function(name) {
+        return {
+            name: name,
+            condition: null,
+            action: null,
+            
+            when: function(conditionFn) {
+                this.condition = conditionFn;
+                return this;
+            },
+            
+            then: function(actionFn) {
+                this.action = actionFn;
+                __PolicyHub.rules.push({
+                    name: this.name,
+                    condition: this.condition,
+                    action: this.action
+                });
+                return this;
+            }
+        };
+    },
+    
+    // Execute all registered rules
+    execute: function(facts, metadata) {
+        var results = [];
+        for (var i = 0; i < this.rules.length; i++) {
+            var rule = this.rules[i];
+            try {
+                var conditionMet = rule.condition(facts, metadata);
+                if (conditionMet) {
+                    var output = rule.action(facts, metadata);
+                    results.push({
+                        rule: rule.name,
+                        conditionMet: true,
+                        output: output
+                    });
+                } else {
+                    results.push({
+                        rule: rule.name,
+                        conditionMet: false,
+                        output: null
+                    });
+                }
+            } catch (e) {
+                results.push({
+                    rule: rule.name,
+                    error: e.toString()
+                });
+            }
+        }
+        return results;
+    },
+    
+    // Reset rules (for reuse)
+    reset: function() {
+        this.rules = [];
+    }
+};
+
+// Expose rule function globally
+function rule(name) {
+    return __PolicyHub.rule(name);
+}
+
+// Expose when/then for standalone usage
+function when(conditionFn) {
+    return {
+        then: function(actionFn) {
+            return {
+                condition: conditionFn,
+                action: actionFn,
+                evaluate: function(facts, metadata) {
+                    var conditionMet = conditionFn(facts, metadata);
+                    if (conditionMet) {
+                        return {
+                            conditionMet: true,
+                            output: actionFn(facts, metadata)
+                        };
+                    }
+                    return { conditionMet: false, output: null };
+                }
+            };
+        }
+    };
+}
+
+
+// === User Rule Definition ===
+rule("boundary").when(f => f.amount > 100).then(f => ({ result: "above" }))
+
+// === Execution Entry Point ===
+function __execute(factsJson, metadataJson) {
+    var facts = JSON.parse(factsJson);
+    var metadata = JSON.parse(metadataJson);
+    var results = __PolicyHub.execute(facts, metadata);
+    return JSON.stringify(results);
+}
+
+                    
+                    // Call the internal __execute function with JSON strings
+                    return __execute(JSON.stringify(facts), JSON.stringify(metadata));
+                }
+                
+                function __template_095f4b911bb249cb8a5924974afcebf8(facts, metadata) {
+                    // Define __execute within this scope
+                    
+// === Policy Hub Runtime ===
+
+// Policy Hub Runtime - when/then DSL
+var __PolicyHub = {
+    rules: [],
+    
+    // Create a new rule builder
+    rule: function(name) {
+        return {
+            name: name,
+            condition: null,
+            action: null,
+            
+            when: function(conditionFn) {
+                this.condition = conditionFn;
+                return this;
+            },
+            
+            then: function(actionFn) {
+                this.action = actionFn;
+                __PolicyHub.rules.push({
+                    name: this.name,
+                    condition: this.condition,
+                    action: this.action
+                });
+                return this;
+            }
+        };
+    },
+    
+    // Execute all registered rules
+    execute: function(facts, metadata) {
+        var results = [];
+        for (var i = 0; i < this.rules.length; i++) {
+            var rule = this.rules[i];
+            try {
+                var conditionMet = rule.condition(facts, metadata);
+                if (conditionMet) {
+                    var output = rule.action(facts, metadata);
+                    results.push({
+                        rule: rule.name,
+                        conditionMet: true,
+                        output: output
+                    });
+                } else {
+                    results.push({
+                        rule: rule.name,
+                        conditionMet: false,
+                        output: null
+                    });
+                }
+            } catch (e) {
+                results.push({
+                    rule: rule.name,
+                    error: e.toString()
+                });
+            }
+        }
+        return results;
+    },
+    
+    // Reset rules (for reuse)
+    reset: function() {
+        this.rules = [];
+    }
+};
+
+// Expose rule function globally
+function rule(name) {
+    return __PolicyHub.rule(name);
+}
+
+// Expose when/then for standalone usage
+function when(conditionFn) {
+    return {
+        then: function(actionFn) {
+            return {
+                condition: conditionFn,
+                action: actionFn,
+                evaluate: function(facts, metadata) {
+                    var conditionMet = conditionFn(facts, metadata);
+                    if (conditionMet) {
+                        return {
+                            conditionMet: true,
+                            output: actionFn(facts, metadata)
+                        };
+                    }
+                    return { conditionMet: false, output: null };
+                }
+            };
+        }
+    };
+}
+
+
+// === User Rule Definition ===
+rule("test").when(f => f.value > 10).then(f => ({result: f.value * 2}))
+
+// === Execution Entry Point ===
+function __execute(factsJson, metadataJson) {
+    var facts = JSON.parse(factsJson);
+    var metadata = JSON.parse(metadataJson);
+    var results = __PolicyHub.execute(facts, metadata);
+    return JSON.stringify(results);
+}
+
+                    
+                    // Call the internal __execute function with JSON strings
+                    return __execute(JSON.stringify(facts), JSON.stringify(metadata));
+                }
+                
+                function __template_99b4e8ee330f49d38a29d2e74cd991ee(facts, metadata) {
+                    // Define __execute within this scope
+                    
+// === Policy Hub Runtime ===
+
+// Policy Hub Runtime - when/then DSL
+var __PolicyHub = {
+    rules: [],
+    
+    // Create a new rule builder
+    rule: function(name) {
+        return {
+            name: name,
+            condition: null,
+            action: null,
+            
+            when: function(conditionFn) {
+                this.condition = conditionFn;
+                return this;
+            },
+            
+            then: function(actionFn) {
+                this.action = actionFn;
+                __PolicyHub.rules.push({
+                    name: this.name,
+                    condition: this.condition,
+                    action: this.action
+                });
+                return this;
+            }
+        };
+    },
+    
+    // Execute all registered rules
+    execute: function(facts, metadata) {
+        var results = [];
+        for (var i = 0; i < this.rules.length; i++) {
+            var rule = this.rules[i];
+            try {
+                var conditionMet = rule.condition(facts, metadata);
+                if (conditionMet) {
+                    var output = rule.action(facts, metadata);
+                    results.push({
+                        rule: rule.name,
+                        conditionMet: true,
+                        output: output
+                    });
+                } else {
+                    results.push({
+                        rule: rule.name,
+                        conditionMet: false,
+                        output: null
+                    });
+                }
+            } catch (e) {
+                results.push({
+                    rule: rule.name,
+                    error: e.toString()
+                });
+            }
+        }
+        return results;
+    },
+    
+    // Reset rules (for reuse)
+    reset: function() {
+        this.rules = [];
+    }
+};
+
+// Expose rule function globally
+function rule(name) {
+    return __PolicyHub.rule(name);
+}
+
+// Expose when/then for standalone usage
+function when(conditionFn) {
+    return {
+        then: function(actionFn) {
+            return {
+                condition: conditionFn,
+                action: actionFn,
+                evaluate: function(facts, metadata) {
+                    var conditionMet = conditionFn(facts, metadata);
+                    if (conditionMet) {
+                        return {
+                            conditionMet: true,
+                            output: actionFn(facts, metadata)
+                        };
+                    }
+                    return { conditionMet: false, output: null };
+                }
+            };
+        }
+    };
+}
+
+
+// === User Rule Definition ===
+rule("discount").when(f => f.amount > 100).then(f => ({ discount: f.amount * 0.1 }))
+
+// === Execution Entry Point ===
+function __execute(factsJson, metadataJson) {
+    var facts = JSON.parse(factsJson);
+    var metadata = JSON.parse(metadataJson);
+    var results = __PolicyHub.execute(facts, metadata);
+    return JSON.stringify(results);
+}
+
+                    
+                    // Call the internal __execute function with JSON strings
+                    return __execute(JSON.stringify(facts), JSON.stringify(metadata));
+                }
+                
+                function __template_dcdd4a609a8c489f9a9e65b0d1e124f2(facts, metadata) {
+                    // Define __execute within this scope
+                    
+// === Policy Hub Runtime ===
+
+// Policy Hub Runtime - when/then DSL
+var __PolicyHub = {
+    rules: [],
+    
+    // Create a new rule builder
+    rule: function(name) {
+        return {
+            name: name,
+            condition: null,
+            action: null,
+            
+            when: function(conditionFn) {
+                this.condition = conditionFn;
+                return this;
+            },
+            
+            then: function(actionFn) {
+                this.action = actionFn;
+                __PolicyHub.rules.push({
+                    name: this.name,
+                    condition: this.condition,
+                    action: this.action
+                });
+                return this;
+            }
+        };
+    },
+    
+    // Execute all registered rules
+    execute: function(facts, metadata) {
+        var results = [];
+        for (var i = 0; i < this.rules.length; i++) {
+            var rule = this.rules[i];
+            try {
+                var conditionMet = rule.condition(facts, metadata);
+                if (conditionMet) {
+                    var output = rule.action(facts, metadata);
+                    results.push({
+                        rule: rule.name,
+                        conditionMet: true,
+                        output: output
+                    });
+                } else {
+                    results.push({
+                        rule: rule.name,
+                        conditionMet: false,
+                        output: null
+                    });
+                }
+            } catch (e) {
+                results.push({
+                    rule: rule.name,
+                    error: e.toString()
+                });
+            }
+        }
+        return results;
+    },
+    
+    // Reset rules (for reuse)
+    reset: function() {
+        this.rules = [];
+    }
+};
+
+// Expose rule function globally
+function rule(name) {
+    return __PolicyHub.rule(name);
+}
+
+// Expose when/then for standalone usage
+function when(conditionFn) {
+    return {
+        then: function(actionFn) {
+            return {
+                condition: conditionFn,
+                action: actionFn,
+                evaluate: function(facts, metadata) {
+                    var conditionMet = conditionFn(facts, metadata);
+                    if (conditionMet) {
+                        return {
+                            conditionMet: true,
+                            output: actionFn(facts, metadata)
+                        };
+                    }
+                    return { conditionMet: false, output: null };
+                }
+            };
+        }
+    };
+}
+
+
+// === User Rule Definition ===
+rule("test").when(f => f.value > 10).then(f => ({result: f.value * 2}))
+
+// === Execution Entry Point ===
+function __execute(factsJson, metadataJson) {
+    var facts = JSON.parse(factsJson);
+    var metadata = JSON.parse(metadataJson);
+    var results = __PolicyHub.execute(facts, metadata);
+    return JSON.stringify(results);
+}
+
+                    
+                    // Call the internal __execute function with JSON strings
+                    return __execute(JSON.stringify(facts), JSON.stringify(metadata));
+                }
+                
+                function __template_9c20ee86a20043cf8767d8a7754dd833(facts, metadata) {
+                    // Define __execute within this scope
+                    
+// === Policy Hub Runtime ===
+
+// Policy Hub Runtime - when/then DSL
+var __PolicyHub = {
+    rules: [],
+    
+    // Create a new rule builder
+    rule: function(name) {
+        return {
+            name: name,
+            condition: null,
+            action: null,
+            
+            when: function(conditionFn) {
+                this.condition = conditionFn;
+                return this;
+            },
+            
+            then: function(actionFn) {
+                this.action = actionFn;
+                __PolicyHub.rules.push({
+                    name: this.name,
+                    condition: this.condition,
+                    action: this.action
+                });
+                return this;
+            }
+        };
+    },
+    
+    // Execute all registered rules
+    execute: function(facts, metadata) {
+        var results = [];
+        for (var i = 0; i < this.rules.length; i++) {
+            var rule = this.rules[i];
+            try {
+                var conditionMet = rule.condition(facts, metadata);
+                if (conditionMet) {
+                    var output = rule.action(facts, metadata);
+                    results.push({
+                        rule: rule.name,
+                        conditionMet: true,
+                        output: output
+                    });
+                } else {
+                    results.push({
+                        rule: rule.name,
+                        conditionMet: false,
+                        output: null
+                    });
+                }
+            } catch (e) {
+                results.push({
+                    rule: rule.name,
+                    error: e.toString()
+                });
+            }
+        }
+        return results;
+    },
+    
+    // Reset rules (for reuse)
+    reset: function() {
+        this.rules = [];
+    }
+};
+
+// Expose rule function globally
+function rule(name) {
+    return __PolicyHub.rule(name);
+}
+
+// Expose when/then for standalone usage
+function when(conditionFn) {
+    return {
+        then: function(actionFn) {
+            return {
+                condition: conditionFn,
+                action: actionFn,
+                evaluate: function(facts, metadata) {
+                    var conditionMet = conditionFn(facts, metadata);
+                    if (conditionMet) {
+                        return {
+                            conditionMet: true,
+                            output: actionFn(facts, metadata)
+                        };
+                    }
+                    return { conditionMet: false, output: null };
+                }
+            };
+        }
+    };
+}
+
+
+// === User Rule Definition ===
+rule("default").when(f => true).then(f => ({result: "ok"}))
+
+// === Execution Entry Point ===
+function __execute(factsJson, metadataJson) {
+    var facts = JSON.parse(factsJson);
+    var metadata = JSON.parse(metadataJson);
+    var results = __PolicyHub.execute(facts, metadata);
+    return JSON.stringify(results);
+}
+
+                    
+                    // Call the internal __execute function with JSON strings
+                    return __execute(JSON.stringify(facts), JSON.stringify(metadata));
+                }
+                
+                function __template_9d77f04dd2404fa1b31450e5cec01888(facts, metadata) {
+                    // Define __execute within this scope
+                    
+// === Policy Hub Runtime ===
+
+// Policy Hub Runtime - when/then DSL
+var __PolicyHub = {
+    rules: [],
+    
+    // Create a new rule builder
+    rule: function(name) {
+        return {
+            name: name,
+            condition: null,
+            action: null,
+            
+            when: function(conditionFn) {
+                this.condition = conditionFn;
+                return this;
+            },
+            
+            then: function(actionFn) {
+                this.action = actionFn;
+                __PolicyHub.rules.push({
+                    name: this.name,
+                    condition: this.condition,
+                    action: this.action
+                });
+                return this;
+            }
+        };
+    },
+    
+    // Execute all registered rules
+    execute: function(facts, metadata) {
+        var results = [];
+        for (var i = 0; i < this.rules.length; i++) {
+            var rule = this.rules[i];
+            try {
+                var conditionMet = rule.condition(facts, metadata);
+                if (conditionMet) {
+                    var output = rule.action(facts, metadata);
+                    results.push({
+                        rule: rule.name,
+                        conditionMet: true,
+                        output: output
+                    });
+                } else {
+                    results.push({
+                        rule: rule.name,
+                        conditionMet: false,
+                        output: null
+                    });
+                }
+            } catch (e) {
+                results.push({
+                    rule: rule.name,
+                    error: e.toString()
+                });
+            }
+        }
+        return results;
+    },
+    
+    // Reset rules (for reuse)
+    reset: function() {
+        this.rules = [];
+    }
+};
+
+// Expose rule function globally
+function rule(name) {
+    return __PolicyHub.rule(name);
+}
+
+// Expose when/then for standalone usage
+function when(conditionFn) {
+    return {
+        then: function(actionFn) {
+            return {
+                condition: conditionFn,
+                action: actionFn,
+                evaluate: function(facts, metadata) {
+                    var conditionMet = conditionFn(facts, metadata);
+                    if (conditionMet) {
+                        return {
+                            conditionMet: true,
+                            output: actionFn(facts, metadata)
+                        };
+                    }
+                    return { conditionMet: false, output: null };
+                }
+            };
+        }
+    };
+}
+
+
+// === User Rule Definition ===
+rule("pricing").when(facts => facts.total > 100).then(facts => ({ discount: facts.total * 0.1, message: "10% discount" }))
+
+// === Execution Entry Point ===
+function __execute(factsJson, metadataJson) {
+    var facts = JSON.parse(factsJson);
+    var metadata = JSON.parse(metadataJson);
+    var results = __PolicyHub.execute(facts, metadata);
+    return JSON.stringify(results);
+}
+
+                    
+                    // Call the internal __execute function with JSON strings
+                    return __execute(JSON.stringify(facts), JSON.stringify(metadata));
+                }
+                
+                function __template_7a5af3bc6497429a9e85e1d932abef16(facts, metadata) {
+                    // Define __execute within this scope
+                    
+// === Policy Hub Runtime ===
+
+// Policy Hub Runtime - when/then DSL
+var __PolicyHub = {
+    rules: [],
+    
+    // Create a new rule builder
+    rule: function(name) {
+        return {
+            name: name,
+            condition: null,
+            action: null,
+            
+            when: function(conditionFn) {
+                this.condition = conditionFn;
+                return this;
+            },
+            
+            then: function(actionFn) {
+                this.action = actionFn;
+                __PolicyHub.rules.push({
+                    name: this.name,
+                    condition: this.condition,
+                    action: this.action
+                });
+                return this;
+            }
+        };
+    },
+    
+    // Execute all registered rules
+    execute: function(facts, metadata) {
+        var results = [];
+        for (var i = 0; i < this.rules.length; i++) {
+            var rule = this.rules[i];
+            try {
+                var conditionMet = rule.condition(facts, metadata);
+                if (conditionMet) {
+                    var output = rule.action(facts, metadata);
+                    results.push({
+                        rule: rule.name,
+                        conditionMet: true,
+                        output: output
+                    });
+                } else {
+                    results.push({
+                        rule: rule.name,
+                        conditionMet: false,
+                        output: null
+                    });
+                }
+            } catch (e) {
+                results.push({
+                    rule: rule.name,
+                    error: e.toString()
+                });
+            }
+        }
+        return results;
+    },
+    
+    // Reset rules (for reuse)
+    reset: function() {
+        this.rules = [];
+    }
+};
+
+// Expose rule function globally
+function rule(name) {
+    return __PolicyHub.rule(name);
+}
+
+// Expose when/then for standalone usage
+function when(conditionFn) {
+    return {
+        then: function(actionFn) {
+            return {
+                condition: conditionFn,
+                action: actionFn,
+                evaluate: function(facts, metadata) {
+                    var conditionMet = conditionFn(facts, metadata);
+                    if (conditionMet) {
+                        return {
+                            conditionMet: true,
+                            output: actionFn(facts, metadata)
+                        };
+                    }
+                    return { conditionMet: false, output: null };
+                }
+            };
+        }
+    };
+}
+
+
+// === User Rule Definition ===
+rule("default").when(f => true).then(f => ({result: "ok"}))
+
+// === Execution Entry Point ===
+function __execute(factsJson, metadataJson) {
+    var facts = JSON.parse(factsJson);
+    var metadata = JSON.parse(metadataJson);
+    var results = __PolicyHub.execute(facts, metadata);
+    return JSON.stringify(results);
+}
+
+                    
+                    // Call the internal __execute function with JSON strings
+                    return __execute(JSON.stringify(facts), JSON.stringify(metadata));
+                }
+                
+                function __template_420ed2935b1c47658d051d53abe7ee9e(facts, metadata) {
+                    // Define __execute within this scope
+                    
+// === Policy Hub Runtime ===
+
+// Policy Hub Runtime - when/then DSL
+var __PolicyHub = {
+    rules: [],
+    
+    // Create a new rule builder
+    rule: function(name) {
+        return {
+            name: name,
+            condition: null,
+            action: null,
+            
+            when: function(conditionFn) {
+                this.condition = conditionFn;
+                return this;
+            },
+            
+            then: function(actionFn) {
+                this.action = actionFn;
+                __PolicyHub.rules.push({
+                    name: this.name,
+                    condition: this.condition,
+                    action: this.action
+                });
+                return this;
+            }
+        };
+    },
+    
+    // Execute all registered rules
+    execute: function(facts, metadata) {
+        var results = [];
+        for (var i = 0; i < this.rules.length; i++) {
+            var rule = this.rules[i];
+            try {
+                var conditionMet = rule.condition(facts, metadata);
+                if (conditionMet) {
+                    var output = rule.action(facts, metadata);
+                    results.push({
+                        rule: rule.name,
+                        conditionMet: true,
+                        output: output
+                    });
+                } else {
+                    results.push({
+                        rule: rule.name,
+                        conditionMet: false,
+                        output: null
+                    });
+                }
+            } catch (e) {
+                results.push({
+                    rule: rule.name,
+                    error: e.toString()
+                });
+            }
+        }
+        return results;
+    },
+    
+    // Reset rules (for reuse)
+    reset: function() {
+        this.rules = [];
+    }
+};
+
+// Expose rule function globally
+function rule(name) {
+    return __PolicyHub.rule(name);
+}
+
+// Expose when/then for standalone usage
+function when(conditionFn) {
+    return {
+        then: function(actionFn) {
+            return {
+                condition: conditionFn,
+                action: actionFn,
+                evaluate: function(facts, metadata) {
+                    var conditionMet = conditionFn(facts, metadata);
+                    if (conditionMet) {
+                        return {
+                            conditionMet: true,
+                            output: actionFn(facts, metadata)
+                        };
+                    }
+                    return { conditionMet: false, output: null };
+                }
+            };
+        }
+    };
+}
+
+
+// === User Rule Definition ===
+rule("loyalty").when(facts => facts.tier === "gold").then(facts => ({ bonus: 100, freeTrial: true }))
+
+// === Execution Entry Point ===
+function __execute(factsJson, metadataJson) {
+    var facts = JSON.parse(factsJson);
+    var metadata = JSON.parse(metadataJson);
+    var results = __PolicyHub.execute(facts, metadata);
+    return JSON.stringify(results);
+}
+
+                    
+                    // Call the internal __execute function with JSON strings
+                    return __execute(JSON.stringify(facts), JSON.stringify(metadata));
+                }
+                
+                function __template_816883e0ad9544b8a30effda0b9c3408(facts, metadata) {
+                    // Define __execute within this scope
+                    
+// === Policy Hub Runtime ===
+
+// Policy Hub Runtime - when/then DSL
+var __PolicyHub = {
+    rules: [],
+    
+    // Create a new rule builder
+    rule: function(name) {
+        return {
+            name: name,
+            condition: null,
+            action: null,
+            
+            when: function(conditionFn) {
+                this.condition = conditionFn;
+                return this;
+            },
+            
+            then: function(actionFn) {
+                this.action = actionFn;
+                __PolicyHub.rules.push({
+                    name: this.name,
+                    condition: this.condition,
+                    action: this.action
+                });
+                return this;
+            }
+        };
+    },
+    
+    // Execute all registered rules
+    execute: function(facts, metadata) {
+        var results = [];
+        for (var i = 0; i < this.rules.length; i++) {
+            var rule = this.rules[i];
+            try {
+                var conditionMet = rule.condition(facts, metadata);
+                if (conditionMet) {
+                    var output = rule.action(facts, metadata);
+                    results.push({
+                        rule: rule.name,
+                        conditionMet: true,
+                        output: output
+                    });
+                } else {
+                    results.push({
+                        rule: rule.name,
+                        conditionMet: false,
+                        output: null
+                    });
+                }
+            } catch (e) {
+                results.push({
+                    rule: rule.name,
+                    error: e.toString()
+                });
+            }
+        }
+        return results;
+    },
+    
+    // Reset rules (for reuse)
+    reset: function() {
+        this.rules = [];
+    }
+};
+
+// Expose rule function globally
+function rule(name) {
+    return __PolicyHub.rule(name);
+}
+
+// Expose when/then for standalone usage
+function when(conditionFn) {
+    return {
+        then: function(actionFn) {
+            return {
+                condition: conditionFn,
+                action: actionFn,
+                evaluate: function(facts, metadata) {
+                    var conditionMet = conditionFn(facts, metadata);
+                    if (conditionMet) {
+                        return {
+                            conditionMet: true,
+                            output: actionFn(facts, metadata)
+                        };
+                    }
+                    return { conditionMet: false, output: null };
+                }
+            };
+        }
+    };
+}
+
+
+// === User Rule Definition ===
+rule("test").when(f => f.value > 10).then(f => ({result: f.value * 2}))
+
+// === Execution Entry Point ===
+function __execute(factsJson, metadataJson) {
+    var facts = JSON.parse(factsJson);
+    var metadata = JSON.parse(metadataJson);
+    var results = __PolicyHub.execute(facts, metadata);
+    return JSON.stringify(results);
+}
+
+                    
+                    // Call the internal __execute function with JSON strings
+                    return __execute(JSON.stringify(facts), JSON.stringify(metadata));
+                }
+                
+                function __template_dfd0d39dab874a98b0bda32b71a6de61(facts, metadata) {
+                    // Define __execute within this scope
+                    
+// === Policy Hub Runtime ===
+
+// Policy Hub Runtime - when/then DSL
+var __PolicyHub = {
+    rules: [],
+    
+    // Create a new rule builder
+    rule: function(name) {
+        return {
+            name: name,
+            condition: null,
+            action: null,
+            
+            when: function(conditionFn) {
+                this.condition = conditionFn;
+                return this;
+            },
+            
+            then: function(actionFn) {
+                this.action = actionFn;
+                __PolicyHub.rules.push({
+                    name: this.name,
+                    condition: this.condition,
+                    action: this.action
+                });
+                return this;
+            }
+        };
+    },
+    
+    // Execute all registered rules
+    execute: function(facts, metadata) {
+        var results = [];
+        for (var i = 0; i < this.rules.length; i++) {
+            var rule = this.rules[i];
+            try {
+                var conditionMet = rule.condition(facts, metadata);
+                if (conditionMet) {
+                    var output = rule.action(facts, metadata);
+                    results.push({
+                        rule: rule.name,
+                        conditionMet: true,
+                        output: output
+                    });
+                } else {
+                    results.push({
+                        rule: rule.name,
+                        conditionMet: false,
+                        output: null
+                    });
+                }
+            } catch (e) {
+                results.push({
+                    rule: rule.name,
+                    error: e.toString()
+                });
+            }
+        }
+        return results;
+    },
+    
+    // Reset rules (for reuse)
+    reset: function() {
+        this.rules = [];
+    }
+};
+
+// Expose rule function globally
+function rule(name) {
+    return __PolicyHub.rule(name);
+}
+
+// Expose when/then for standalone usage
+function when(conditionFn) {
+    return {
+        then: function(actionFn) {
+            return {
+                condition: conditionFn,
+                action: actionFn,
+                evaluate: function(facts, metadata) {
+                    var conditionMet = conditionFn(facts, metadata);
+                    if (conditionMet) {
+                        return {
+                            conditionMet: true,
+                            output: actionFn(facts, metadata)
+                        };
+                    }
+                    return { conditionMet: false, output: null };
+                }
+            };
+        }
+    };
+}
+
+
+// === User Rule Definition ===
+rule("shipping").when(facts => facts.weight > 10).then(facts => ({ cost: facts.weight * 2, express: true }))
+
+// === Execution Entry Point ===
+function __execute(factsJson, metadataJson) {
+    var facts = JSON.parse(factsJson);
+    var metadata = JSON.parse(metadataJson);
+    var results = __PolicyHub.execute(facts, metadata);
+    return JSON.stringify(results);
+}
+
+                    
+                    // Call the internal __execute function with JSON strings
+                    return __execute(JSON.stringify(facts), JSON.stringify(metadata));
+                }
+                
+                function __template_5e12d2dcc09641f39eb0a140978858ce(facts, metadata) {
+                    // Define __execute within this scope
+                    
+// === Policy Hub Runtime ===
+
+// Policy Hub Runtime - when/then DSL
+var __PolicyHub = {
+    rules: [],
+    
+    // Create a new rule builder
+    rule: function(name) {
+        return {
+            name: name,
+            condition: null,
+            action: null,
+            
+            when: function(conditionFn) {
+                this.condition = conditionFn;
+                return this;
+            },
+            
+            then: function(actionFn) {
+                this.action = actionFn;
+                __PolicyHub.rules.push({
+                    name: this.name,
+                    condition: this.condition,
+                    action: this.action
+                });
+                return this;
+            }
+        };
+    },
+    
+    // Execute all registered rules
+    execute: function(facts, metadata) {
+        var results = [];
+        for (var i = 0; i < this.rules.length; i++) {
+            var rule = this.rules[i];
+            try {
+                var conditionMet = rule.condition(facts, metadata);
+                if (conditionMet) {
+                    var output = rule.action(facts, metadata);
+                    results.push({
+                        rule: rule.name,
+                        conditionMet: true,
+                        output: output
+                    });
+                } else {
+                    results.push({
+                        rule: rule.name,
+                        conditionMet: false,
+                        output: null
+                    });
+                }
+            } catch (e) {
+                results.push({
+                    rule: rule.name,
+                    error: e.toString()
+                });
+            }
+        }
+        return results;
+    },
+    
+    // Reset rules (for reuse)
+    reset: function() {
+        this.rules = [];
+    }
+};
+
+// Expose rule function globally
+function rule(name) {
+    return __PolicyHub.rule(name);
+}
+
+// Expose when/then for standalone usage
+function when(conditionFn) {
+    return {
+        then: function(actionFn) {
+            return {
+                condition: conditionFn,
+                action: actionFn,
+                evaluate: function(facts, metadata) {
+                    var conditionMet = conditionFn(facts, metadata);
+                    if (conditionMet) {
+                        return {
+                            conditionMet: true,
+                            output: actionFn(facts, metadata)
+                        };
+                    }
+                    return { conditionMet: false, output: null };
+                }
+            };
+        }
+    };
+}
+
+
+// === User Rule Definition ===
+rule("default").when(f => true).then(f => ({result: "ok"}))
+
+// === Execution Entry Point ===
+function __execute(factsJson, metadataJson) {
+    var facts = JSON.parse(factsJson);
+    var metadata = JSON.parse(metadataJson);
+    var results = __PolicyHub.execute(facts, metadata);
+    return JSON.stringify(results);
+}
+
+                    
+                    // Call the internal __execute function with JSON strings
+                    return __execute(JSON.stringify(facts), JSON.stringify(metadata));
+                }
+                
+                function __template_73b119a5481a4255aeb3c07fce52913c(facts, metadata) {
+                    // Define __execute within this scope
+                    
+// === Policy Hub Runtime ===
+
+// Policy Hub Runtime - when/then DSL
+var __PolicyHub = {
+    rules: [],
+    
+    // Create a new rule builder
+    rule: function(name) {
+        return {
+            name: name,
+            condition: null,
+            action: null,
+            
+            when: function(conditionFn) {
+                this.condition = conditionFn;
+                return this;
+            },
+            
+            then: function(actionFn) {
+                this.action = actionFn;
+                __PolicyHub.rules.push({
+                    name: this.name,
+                    condition: this.condition,
+                    action: this.action
+                });
+                return this;
+            }
+        };
+    },
+    
+    // Execute all registered rules
+    execute: function(facts, metadata) {
+        var results = [];
+        for (var i = 0; i < this.rules.length; i++) {
+            var rule = this.rules[i];
+            try {
+                var conditionMet = rule.condition(facts, metadata);
+                if (conditionMet) {
+                    var output = rule.action(facts, metadata);
+                    results.push({
+                        rule: rule.name,
+                        conditionMet: true,
+                        output: output
+                    });
+                } else {
+                    results.push({
+                        rule: rule.name,
+                        conditionMet: false,
+                        output: null
+                    });
+                }
+            } catch (e) {
+                results.push({
+                    rule: rule.name,
+                    error: e.toString()
+                });
+            }
+        }
+        return results;
+    },
+    
+    // Reset rules (for reuse)
+    reset: function() {
+        this.rules = [];
+    }
+};
+
+// Expose rule function globally
+function rule(name) {
+    return __PolicyHub.rule(name);
+}
+
+// Expose when/then for standalone usage
+function when(conditionFn) {
+    return {
+        then: function(actionFn) {
+            return {
+                condition: conditionFn,
+                action: actionFn,
+                evaluate: function(facts, metadata) {
+                    var conditionMet = conditionFn(facts, metadata);
+                    if (conditionMet) {
+                        return {
+                            conditionMet: true,
+                            output: actionFn(facts, metadata)
+                        };
+                    }
+                    return { conditionMet: false, output: null };
+                }
+            };
+        }
+    };
+}
+
+
+// === User Rule Definition ===
+rule("discount").when(f => f.amount > 100).then(f => ({ discount: f.amount * 0.1 }))
+
+// === Execution Entry Point ===
+function __execute(factsJson, metadataJson) {
+    var facts = JSON.parse(factsJson);
+    var metadata = JSON.parse(metadataJson);
+    var results = __PolicyHub.execute(facts, metadata);
+    return JSON.stringify(results);
+}
+
+                    
+                    // Call the internal __execute function with JSON strings
+                    return __execute(JSON.stringify(facts), JSON.stringify(metadata));
+                }
+                
+                function __template_f159fb63f3a547af892d7d078942f389(facts, metadata) {
+                    // Define __execute within this scope
+                    
+// === Policy Hub Runtime ===
+
+// Policy Hub Runtime - when/then DSL
+var __PolicyHub = {
+    rules: [],
+    
+    // Create a new rule builder
+    rule: function(name) {
+        return {
+            name: name,
+            condition: null,
+            action: null,
+            
+            when: function(conditionFn) {
+                this.condition = conditionFn;
+                return this;
+            },
+            
+            then: function(actionFn) {
+                this.action = actionFn;
+                __PolicyHub.rules.push({
+                    name: this.name,
+                    condition: this.condition,
+                    action: this.action
+                });
+                return this;
+            }
+        };
+    },
+    
+    // Execute all registered rules
+    execute: function(facts, metadata) {
+        var results = [];
+        for (var i = 0; i < this.rules.length; i++) {
+            var rule = this.rules[i];
+            try {
+                var conditionMet = rule.condition(facts, metadata);
+                if (conditionMet) {
+                    var output = rule.action(facts, metadata);
+                    results.push({
+                        rule: rule.name,
+                        conditionMet: true,
+                        output: output
+                    });
+                } else {
+                    results.push({
+                        rule: rule.name,
+                        conditionMet: false,
+                        output: null
+                    });
+                }
+            } catch (e) {
+                results.push({
+                    rule: rule.name,
+                    error: e.toString()
+                });
+            }
+        }
+        return results;
+    },
+    
+    // Reset rules (for reuse)
+    reset: function() {
+        this.rules = [];
+    }
+};
+
+// Expose rule function globally
+function rule(name) {
+    return __PolicyHub.rule(name);
+}
+
+// Expose when/then for standalone usage
+function when(conditionFn) {
+    return {
+        then: function(actionFn) {
+            return {
+                condition: conditionFn,
+                action: actionFn,
+                evaluate: function(facts, metadata) {
+                    var conditionMet = conditionFn(facts, metadata);
+                    if (conditionMet) {
+                        return {
+                            conditionMet: true,
+                            output: actionFn(facts, metadata)
+                        };
+                    }
+                    return { conditionMet: false, output: null };
+                }
+            };
+        }
+    };
+}
+
+
+// === User Rule Definition ===
+rule("boundary").when(f => f.amount > 100).then(f => ({ result: "above" }))
+
+// === Execution Entry Point ===
+function __execute(factsJson, metadataJson) {
+    var facts = JSON.parse(factsJson);
+    var metadata = JSON.parse(metadataJson);
+    var results = __PolicyHub.execute(facts, metadata);
+    return JSON.stringify(results);
+}
+
+                    
+                    // Call the internal __execute function with JSON strings
+                    return __execute(JSON.stringify(facts), JSON.stringify(metadata));
+                }
+                
+                function __template_0b566b3e7c4a4d4cbb659729e67d5bae(facts, metadata) {
+                    // Define __execute within this scope
+                    
+// === Policy Hub Runtime ===
+
+// Policy Hub Runtime - when/then DSL
+var __PolicyHub = {
+    rules: [],
+    
+    // Create a new rule builder
+    rule: function(name) {
+        return {
+            name: name,
+            condition: null,
+            action: null,
+            
+            when: function(conditionFn) {
+                this.condition = conditionFn;
+                return this;
+            },
+            
+            then: function(actionFn) {
+                this.action = actionFn;
+                __PolicyHub.rules.push({
+                    name: this.name,
+                    condition: this.condition,
+                    action: this.action
+                });
+                return this;
+            }
+        };
+    },
+    
+    // Execute all registered rules
+    execute: function(facts, metadata) {
+        var results = [];
+        for (var i = 0; i < this.rules.length; i++) {
+            var rule = this.rules[i];
+            try {
+                var conditionMet = rule.condition(facts, metadata);
+                if (conditionMet) {
+                    var output = rule.action(facts, metadata);
+                    results.push({
+                        rule: rule.name,
+                        conditionMet: true,
+                        output: output
+                    });
+                } else {
+                    results.push({
+                        rule: rule.name,
+                        conditionMet: false,
+                        output: null
+                    });
+                }
+            } catch (e) {
+                results.push({
+                    rule: rule.name,
+                    error: e.toString()
+                });
+            }
+        }
+        return results;
+    },
+    
+    // Reset rules (for reuse)
+    reset: function() {
+        this.rules = [];
+    }
+};
+
+// Expose rule function globally
+function rule(name) {
+    return __PolicyHub.rule(name);
+}
+
+// Expose when/then for standalone usage
+function when(conditionFn) {
+    return {
+        then: function(actionFn) {
+            return {
+                condition: conditionFn,
+                action: actionFn,
+                evaluate: function(facts, metadata) {
+                    var conditionMet = conditionFn(facts, metadata);
+                    if (conditionMet) {
+                        return {
+                            conditionMet: true,
+                            output: actionFn(facts, metadata)
+                        };
+                    }
+                    return { conditionMet: false, output: null };
+                }
+            };
+        }
+    };
+}
+
+
+// === User Rule Definition ===
+rule("discount").when(f => f.amount > 100).then(f => ({ discount: f.amount * 0.1 }))
+
+// === Execution Entry Point ===
+function __execute(factsJson, metadataJson) {
+    var facts = JSON.parse(factsJson);
+    var metadata = JSON.parse(metadataJson);
+    var results = __PolicyHub.execute(facts, metadata);
+    return JSON.stringify(results);
+}
+
+                    
+                    // Call the internal __execute function with JSON strings
+                    return __execute(JSON.stringify(facts), JSON.stringify(metadata));
+                }
+                
+                function __template_60a42b0d677e43a18841d6a2659b966e(facts, metadata) {
+                    // Define __execute within this scope
+                    
+// === Policy Hub Runtime ===
+
+// Policy Hub Runtime - when/then DSL
+var __PolicyHub = {
+    rules: [],
+    
+    // Create a new rule builder
+    rule: function(name) {
+        return {
+            name: name,
+            condition: null,
+            action: null,
+            
+            when: function(conditionFn) {
+                this.condition = conditionFn;
+                return this;
+            },
+            
+            then: function(actionFn) {
+                this.action = actionFn;
+                __PolicyHub.rules.push({
+                    name: this.name,
+                    condition: this.condition,
+                    action: this.action
+                });
+                return this;
+            }
+        };
+    },
+    
+    // Execute all registered rules
+    execute: function(facts, metadata) {
+        var results = [];
+        for (var i = 0; i < this.rules.length; i++) {
+            var rule = this.rules[i];
+            try {
+                var conditionMet = rule.condition(facts, metadata);
+                if (conditionMet) {
+                    var output = rule.action(facts, metadata);
+                    results.push({
+                        rule: rule.name,
+                        conditionMet: true,
+                        output: output
+                    });
+                } else {
+                    results.push({
+                        rule: rule.name,
+                        conditionMet: false,
+                        output: null
+                    });
+                }
+            } catch (e) {
+                results.push({
+                    rule: rule.name,
+                    error: e.toString()
+                });
+            }
+        }
+        return results;
+    },
+    
+    // Reset rules (for reuse)
+    reset: function() {
+        this.rules = [];
+    }
+};
+
+// Expose rule function globally
+function rule(name) {
+    return __PolicyHub.rule(name);
+}
+
+// Expose when/then for standalone usage
+function when(conditionFn) {
+    return {
+        then: function(actionFn) {
+            return {
+                condition: conditionFn,
+                action: actionFn,
+                evaluate: function(facts, metadata) {
+                    var conditionMet = conditionFn(facts, metadata);
+                    if (conditionMet) {
+                        return {
+                            conditionMet: true,
+                            output: actionFn(facts, metadata)
+                        };
+                    }
+                    return { conditionMet: false, output: null };
+                }
+            };
+        }
+    };
+}
+
+
+// === User Rule Definition ===
+rule("default").when(f => true).then(f => ({result: "ok"}))
+
+// === Execution Entry Point ===
+function __execute(factsJson, metadataJson) {
+    var facts = JSON.parse(factsJson);
+    var metadata = JSON.parse(metadataJson);
+    var results = __PolicyHub.execute(facts, metadata);
+    return JSON.stringify(results);
+}
+
+                    
+                    // Call the internal __execute function with JSON strings
+                    return __execute(JSON.stringify(facts), JSON.stringify(metadata));
+                }
+                
+                function __template_a40511ed7d5f4e97a3732ab3dc483857(facts, metadata) {
+                    // Define __execute within this scope
+                    
+// === Policy Hub Runtime ===
+
+// Policy Hub Runtime - when/then DSL
+var __PolicyHub = {
+    rules: [],
+    
+    // Create a new rule builder
+    rule: function(name) {
+        return {
+            name: name,
+            condition: null,
+            action: null,
+            
+            when: function(conditionFn) {
+                this.condition = conditionFn;
+                return this;
+            },
+            
+            then: function(actionFn) {
+                this.action = actionFn;
+                __PolicyHub.rules.push({
+                    name: this.name,
+                    condition: this.condition,
+                    action: this.action
+                });
+                return this;
+            }
+        };
+    },
+    
+    // Execute all registered rules
+    execute: function(facts, metadata) {
+        var results = [];
+        for (var i = 0; i < this.rules.length; i++) {
+            var rule = this.rules[i];
+            try {
+                var conditionMet = rule.condition(facts, metadata);
+                if (conditionMet) {
+                    var output = rule.action(facts, metadata);
+                    results.push({
+                        rule: rule.name,
+                        conditionMet: true,
+                        output: output
+                    });
+                } else {
+                    results.push({
+                        rule: rule.name,
+                        conditionMet: false,
+                        output: null
+                    });
+                }
+            } catch (e) {
+                results.push({
+                    rule: rule.name,
+                    error: e.toString()
+                });
+            }
+        }
+        return results;
+    },
+    
+    // Reset rules (for reuse)
+    reset: function() {
+        this.rules = [];
+    }
+};
+
+// Expose rule function globally
+function rule(name) {
+    return __PolicyHub.rule(name);
+}
+
+// Expose when/then for standalone usage
+function when(conditionFn) {
+    return {
+        then: function(actionFn) {
+            return {
+                condition: conditionFn,
+                action: actionFn,
+                evaluate: function(facts, metadata) {
+                    var conditionMet = conditionFn(facts, metadata);
+                    if (conditionMet) {
+                        return {
+                            conditionMet: true,
+                            output: actionFn(facts, metadata)
+                        };
+                    }
+                    return { conditionMet: false, output: null };
+                }
+            };
+        }
+    };
+}
+
+
+// === User Rule Definition ===
+rule("boundary").when(f => f.amount > 100).then(f => ({ result: "above" }))
+
+// === Execution Entry Point ===
+function __execute(factsJson, metadataJson) {
+    var facts = JSON.parse(factsJson);
+    var metadata = JSON.parse(metadataJson);
+    var results = __PolicyHub.execute(facts, metadata);
+    return JSON.stringify(results);
+}
+
+                    
+                    // Call the internal __execute function with JSON strings
+                    return __execute(JSON.stringify(facts), JSON.stringify(metadata));
+                }
+                
+                function __template_9032d0a4021d4842b6525b92966dcb6e(facts, metadata) {
+                    // Define __execute within this scope
+                    
+// === Policy Hub Runtime ===
+
+// Policy Hub Runtime - when/then DSL
+var __PolicyHub = {
+    rules: [],
+    
+    // Create a new rule builder
+    rule: function(name) {
+        return {
+            name: name,
+            condition: null,
+            action: null,
+            
+            when: function(conditionFn) {
+                this.condition = conditionFn;
+                return this;
+            },
+            
+            then: function(actionFn) {
+                this.action = actionFn;
+                __PolicyHub.rules.push({
+                    name: this.name,
+                    condition: this.condition,
+                    action: this.action
+                });
+                return this;
+            }
+        };
+    },
+    
+    // Execute all registered rules
+    execute: function(facts, metadata) {
+        var results = [];
+        for (var i = 0; i < this.rules.length; i++) {
+            var rule = this.rules[i];
+            try {
+                var conditionMet = rule.condition(facts, metadata);
+                if (conditionMet) {
+                    var output = rule.action(facts, metadata);
+                    results.push({
+                        rule: rule.name,
+                        conditionMet: true,
+                        output: output
+                    });
+                } else {
+                    results.push({
+                        rule: rule.name,
+                        conditionMet: false,
+                        output: null
+                    });
+                }
+            } catch (e) {
+                results.push({
+                    rule: rule.name,
+                    error: e.toString()
+                });
+            }
+        }
+        return results;
+    },
+    
+    // Reset rules (for reuse)
+    reset: function() {
+        this.rules = [];
+    }
+};
+
+// Expose rule function globally
+function rule(name) {
+    return __PolicyHub.rule(name);
+}
+
+// Expose when/then for standalone usage
+function when(conditionFn) {
+    return {
+        then: function(actionFn) {
+            return {
+                condition: conditionFn,
+                action: actionFn,
+                evaluate: function(facts, metadata) {
+                    var conditionMet = conditionFn(facts, metadata);
+                    if (conditionMet) {
+                        return {
+                            conditionMet: true,
+                            output: actionFn(facts, metadata)
+                        };
+                    }
+                    return { conditionMet: false, output: null };
+                }
+            };
+        }
+    };
+}
+
+
+// === User Rule Definition ===
+rule("discount").when(f => f.amount > 100).then(f => ({ discount: f.amount * 0.1 }))
+
+// === Execution Entry Point ===
+function __execute(factsJson, metadataJson) {
+    var facts = JSON.parse(factsJson);
+    var metadata = JSON.parse(metadataJson);
+    var results = __PolicyHub.execute(facts, metadata);
+    return JSON.stringify(results);
+}
+
+                    
+                    // Call the internal __execute function with JSON strings
+                    return __execute(JSON.stringify(facts), JSON.stringify(metadata));
+                }
+                
+                    __register_policy("a5620999-cdfb-4857-87ea-8868253024c6", __template_5e12d2dcc09641f39eb0a140978858ce, {});
+                    
+                    __register_policy("b570476a-4192-4bc6-997c-30bab2eb8129", __template_60a42b0d677e43a18841d6a2659b966e, {});
+                    
+                    __register_policy("025dbc59-4cab-4c15-8c29-75c4e1c29737", __template_5e12d2dcc09641f39eb0a140978858ce, {});
+                    
+                    __register_policy("72eda579-0e4b-4c62-a980-69773c7993bd", __template_7a5af3bc6497429a9e85e1d932abef16, {});
+                    
+                    __register_policy("393425fc-5cf0-4316-83b6-06ef375cfaf0", __template_a40511ed7d5f4e97a3732ab3dc483857, {});
+                    
+                    __register_policy("36de2059-82e5-4e5a-9c00-68aa14ec83a9", __template_33a3557afd53464eb7b6006aafd1ff6f, {});
+                    
+                    __register_policy("9f8f021e-a0e0-47cc-9e35-c2e573583be6", __template_60a13e229957412d8acd52128e2003ab, {});
+                    
+                    __register_policy("8a79a2b8-df41-4b94-9352-49592da58c1a", __template_f159fb63f3a547af892d7d078942f389, {});
+                    
+                    __register_policy("07d11162-c92f-48e2-8a5f-28f22af8753a", __template_0b566b3e7c4a4d4cbb659729e67d5bae, {});
+                    
+                    __register_policy("038c7c26-faf7-467a-8a6c-f924e2384946", __template_73b119a5481a4255aeb3c07fce52913c, {});
+                    
+                    __register_policy("a51091af-c911-46df-b814-eaeed69baf79", __template_bed4b4a5c4804ecd8454d9192a2f484c, {});
+                    
+                    __register_policy("cd641cec-7d7e-446a-96fe-3fc8f67b30ab", __template_99b4e8ee330f49d38a29d2e74cd991ee, {});
+                    
+                    __register_policy("fd19e395-b70a-44a2-9ef9-49215bbabacc", __template_ff9db972fe194f2b804b25309d89e4fa, {});
+                    
+                    __register_policy("aa1c8eac-9b23-4b5d-ae4b-4fc97e9925de", __template_b77d2b06b0754e3391f360ad377d86dc, {});
+                    
+                    __register_policy("3d2e0539-3b2f-462c-bdc8-a9f086ee08cd", __template_dcdd4a609a8c489f9a9e65b0d1e124f2, {});
+                    
+                    __register_policy("206516f5-0267-4405-8360-c96ff7357aee", __template_816883e0ad9544b8a30effda0b9c3408, {});
+                    
+                    __register_policy("97018514-3b9a-4361-81ad-07bd865ef20c", __template_095f4b911bb249cb8a5924974afcebf8, {});
+                    
+                    __register_policy("791cdf4f-7135-4c6e-8c98-1baa13196888", __template_1d9069ded4cd4b81b87fa4ce89aba4c9, {});
+                    
+                    __register_policy("fe406c04-1665-4846-b6f7-180bc6d6d236", __template_1d9069ded4cd4b81b87fa4ce89aba4c9, {});
+                    
+                    __register_policy("c836d0cb-1094-4e77-9a55-c5df32e30e50", __template_4c64bde71b6d44888c37ce4c2b79176c, {});
+                    
+                    __register_policy("12ecc15f-132e-4b21-8320-091239b8c58a", __template_b48389a9d4e64adebc3e938936c11b23, {});
+                    
+                    __register_policy("cb8e18eb-93da-423e-b09e-154c1f8f95b2", __template_9032d0a4021d4842b6525b92966dcb6e, {});
+                    
+                    __register_policy("c67bf44c-6046-45f8-bf19-7915c67be5ce", __template_420ed2935b1c47658d051d53abe7ee9e, {"level":"gold","program":"VIP"});
+                    
+                    __register_policy("a38d008b-24bb-4b68-80c5-fb4a00b89b84", __template_dfd0d39dab874a98b0bda32b71a6de61, {"carrier":"FedEx","priority":"high"});
+                    
+                    __register_policy("4c957a54-8001-4ad4-8374-507b2a1f88b9", __template_9d77f04dd2404fa1b31450e5cec01888, {"category":"electronics","region":"US"});
+                    
+                    __register_policy("45f64792-c588-4d2e-86b7-88a53b4b609f", __template_9c20ee86a20043cf8767d8a7754dd833, {});
+                    

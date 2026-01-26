@@ -1,0 +1,16 @@
+[package]
+name = "policy-hub-compiler"
+version.workspace = true
+edition.workspace = true
+
+[dependencies]
+policy-hub-core = { path = "../policy-hub-core" }
+tokio = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }
+thiserror = { workspace = true }
+anyhow = { workspace = true }
+tracing = { workspace = true }
+
+# JavaScript/TypeScript processing
+rquickjs = { version = "0.4", features = ["bindgen", "loader", "classes"] }

@@ -1,0 +1,25 @@
+version: '3.8'
+
+services:
+  couchbase:
+    image: couchbase:community-7.2.0
+    container_name: policy-hub-couchbase
+    ports:
+      - "8091:8091"   # Web Console
+      - "8092:8092"   # Views API
+      - "8093:8093"   # Query API
+      - "8094:8094"   # Full-text Search
+      - "11210:11210" # Data Service
+    environment:
+      - COUCHBASE_ADMINISTRATOR_USERNAME=admin
+      - COUCHBASE_ADMINISTRATOR_PASSWORD=password123
+    volumes:
+      - couchbase_data:/opt/couchbase/var
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8091/pools"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  couchbase_data:

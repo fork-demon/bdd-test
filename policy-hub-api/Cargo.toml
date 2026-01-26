@@ -1,0 +1,38 @@
+[package]
+name = "policy-hub-api"
+version.workspace = true
+edition.workspace = true
+
+[features]
+default = []
+couchbase = []
+
+[dependencies]
+policy-hub-core = { path = "../policy-hub-core" }
+policy-hub-storage = { path = "../policy-hub-storage", features = ["couchbase"] }
+policy-hub-executor = { path = "../policy-hub-executor" }
+policy-hub-compiler = { path = "../policy-hub-compiler" }
+policy-hub-bundler = { path = "../policy-hub-bundler" }
+
+tokio = { workspace = true }
+axum = { workspace = true }
+tower = { workspace = true }
+tower-http = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }
+uuid = { workspace = true }
+chrono = { workspace = true }
+thiserror = { workspace = true }
+anyhow = { workspace = true }
+tracing = { workspace = true }
+tracing-subscriber = { workspace = true }
+
+[dev-dependencies]
+cucumber = "0.21"
+reqwest = { version = "0.12", features = ["json"] }
+futures = "0.3"
+tokio = { version = "1", features = ["rt-multi-thread", "macros"] }
+
+[[test]]
+name = "bdd"
+harness = false

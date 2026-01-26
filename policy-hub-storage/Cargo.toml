@@ -1,0 +1,24 @@
+[package]
+name = "policy-hub-storage"
+version.workspace = true
+edition.workspace = true
+
+[features]
+default = []
+couchbase = ["dep:couchbase"]
+
+[dependencies]
+policy-hub-core = { path = "../policy-hub-core" }
+tokio = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }
+uuid = { workspace = true }
+chrono = { workspace = true }
+thiserror = { workspace = true }
+anyhow = { workspace = true }
+async-trait = { workspace = true }
+tracing = { workspace = true }
+
+# Couchbase SDK (optional)
+couchbase = { workspace = true, optional = true }
+tokio-stream = { workspace = true }
