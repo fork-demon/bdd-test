@@ -1,8 +1,5 @@
 # BDD Framework Evaluation for Policy Hub
 
-*Staff Engineer | January 2026*
-
----
 
 ## TL;DR
 
