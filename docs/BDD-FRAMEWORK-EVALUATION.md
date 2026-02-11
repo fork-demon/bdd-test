@@ -99,6 +99,16 @@ I'd only recommend this if there's a hard requirement for an all-Rust toolchain.
 
 ---
 
+### rstest-bdd (Rust) — Newer Native Option
+
+**Docs.rs**: [v0.5.0](https://docs.rs/rstest-bdd) | **Status**: Actively maintained
+
+A native Rust BDD framework built on `rstest`. Uses `#[given]`, `#[when]`, `#[then]` attribute macros with Gherkin `.feature` files. Key advantage over cucumber-rs: runs via `cargo test` (no custom runner), supports compile-time step validation, and shares `rstest` fixtures between unit/integration/BDD tests.
+
+Still gray-box (same process), but a strong contender if you want all-Rust with proper Gherkin support.
+
+---
+
 ### Others I Looked At
 
 **Hurl** - Not BDD (no Gherkin), but excellent for quick HTTP smoke tests in CI. We already have these in `tests/hurl/` and they're useful for post-deployment checks.
@@ -515,6 +525,91 @@ jsonpath "$.condition_met" == true
 
 ---
 
+### rust-rspec (Rust describe/it)
+
+> **Note:** rust-rspec is unmaintained (5+ years). This pattern uses standard Rust test modules with `describe`/`it`-style naming. No feature files — the specification is embedded in the test names and comments.
+
+**Test file** (`rspec_tests.rs`):
+```rust
+use reqwest::blocking::Client;
+use serde_json::{json, Value};
+use std::time::Duration;
+
+fn api_base_url() -> String {
+    std::env::var("API_BASE_URL").unwrap_or_else(|_| "http://localhost:8080".to_string())
+}
+
+fn create_client() -> Client {
+    Client::builder().timeout(Duration::from_secs(10)).build().unwrap()
+}
+
+fn create_template(client: &Client, name: &str, source: &str) -> String {
+    let resp = client.post(format!("{}/api/rule-templates", api_base_url()))
+        .json(&json!({"name": name, "source": source}))
+        .send().expect("Failed to create template");
+    let json: Value = resp.json().unwrap();
+    json["id"].as_str().unwrap().to_string()
+}
+
+fn create_policy(client: &Client, name: &str, template_id: &str) -> String {
+    let resp = client.post(format!("{}/api/policies", api_base_url()))
+        .json(&json!({"name": name, "rule_template_id": template_id, "metadata": {}}))
+        .send().expect("Failed to create policy");
+    let json: Value = resp.json().unwrap();
+    json["id"].as_str().unwrap().to_string()
+}
+
+fn execute_policy(client: &Client, policy_id: &str, facts: Value) -> Value {
+    client.post(format!("{}/api/execute", api_base_url()))
+        .json(&json!({"policy_id": policy_id, "facts": facts}))
+        .send().expect("Failed to execute").json().unwrap()
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    mod api_health {
+        use super::*;
+        #[test]
+        fn it_returns_healthy_status() {
+            let client = create_client();
+            let resp = client.get(format!("{}/health", api_base_url()))
+                .send().expect("Health check failed");
+            assert!(resp.status().is_success());
+        }
+    }
+
+    mod policy_execution {
+        use super::*;
+        #[test]
+        fn it_executes_when_condition_is_met() {
+            let client = create_client();
+            let tid = create_template(&client, "rspec-discount", 
+                r#"rule("discount").when(f => f.amount > 100).then(f => ({discount: f.amount * 0.1}))"#);
+            let pid = create_policy(&client, "rspec-policy", &tid);
+            let result = execute_policy(&client, &pid, json!({"amount": 150}));
+            assert_eq!(result["success"], true);
+            assert_eq!(result["condition_met"], true);
+            assert_eq!(result["output_facts"]["discount"], 15);
+        }
+
+        #[test]
+        fn it_does_not_execute_when_condition_is_not_met() {
+            let client = create_client();
+            let tid = create_template(&client, "rspec-no-discount",
+                r#"rule("discount").when(f => f.amount > 100).then(f => ({discount: f.amount * 0.1}))"#);
+            let pid = create_policy(&client, "rspec-no-policy", &tid);
+            let result = execute_policy(&client, &pid, json!({"amount": 50}));
+            assert_eq!(result["success"], true);
+            assert_eq!(result["condition_met"], false);
+        }
+    }
+}
+```
+
+---
+
 ### Running Each Framework
 
 ```bash
@@ -528,7 +623,13 @@ cd tests/godog
 go test -v
 
 # cucumber-rs
-cargo test --test bdd -p policy-hub-api
+cargo test --test bdd --features couchbase
+
+# rstest-bdd
+cargo test --test rstest_bdd_steps -p policy-hub-api
+
+# rust-rspec
+cargo test --test rspec_tests -p policy-hub-api
 
 # hurl
 cd tests/hurl

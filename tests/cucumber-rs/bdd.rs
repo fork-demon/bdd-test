@@ -294,5 +294,5 @@ async fn create_template(world: &mut PolicyHubWorld, name: &str, source: &str) {
 // ==================== Main ====================
 
 fn main() {
-    futures::executor::block_on(PolicyHubWorld::run("tests/features"));
+    futures::executor::block_on(PolicyHubWorld::run("tests/cucumber-rs/features"));
 }

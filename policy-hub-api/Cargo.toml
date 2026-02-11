@@ -29,10 +29,22 @@ tracing-subscriber = { workspace = true }
 
 [dev-dependencies]
 cucumber = "0.21"
-reqwest = { version = "0.12", features = ["json"] }
+reqwest = { version = "0.12", features = ["json", "blocking"] }
 futures = "0.3"
 tokio = { version = "1", features = ["rt-multi-thread", "macros"] }
+rstest-bdd = "0.5"
+rstest-bdd-macros = "0.5"
+rstest = "0.24"
+serde_json = { workspace = true }
 
 [[test]]
 name = "bdd"
 harness = false
+
+[[test]]
+name = "rspec_tests"
+harness = true
+
+[[test]]
+name = "rstest_bdd_steps"
+harness = true
